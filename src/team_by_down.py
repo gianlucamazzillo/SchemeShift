@@ -54,21 +54,21 @@ def analyze_team_by_down(pbp: pd.DataFrame, team: str,) -> pd.DataFrame:
             'down',
             'play_type',
             'number_of_plays',
+            "play_percentage",
             'conversion_rate',
             'conversions',
-            'play_percentage',
             'average_yards',
             'average_ydstogo',
         ]
     ].sort_values(['down', 'play_type'])
 
-print(f'Carregando a temporada {SEASON}...')
+print(f'Loading {SEASON} season...')
 
 pbp = nfl.load_pbp(SEASON).to_pandas()
 
 result = analyze_team_by_down(pbp, TEAM)
 
-print(f'\nAtaque de {TEAM} por descida: ')
+print(f'\n{TEAM} offense by down: ')
 print(result.to_string(index=False))
 
 
@@ -153,9 +153,9 @@ def analyze_late_downs_by_distance (pbp: pd.DataFrame, team: str) -> pd.DataFram
             "distance_group",
             "play_type",
             "number_of_plays",
+            "play_percentage",
             "conversions",
             "conversion_rate",
-            "play_percentage",
             "average_yards",
             "average_ydstogo",     
             ]
@@ -171,8 +171,8 @@ distance_result = analyze_late_downs_by_distance(
 )
 
 print(
-    f"\nTerceiras e quartas descidas de "
-    f"{TEAM} por distância:"
+    f"\nThird and fourth downs for "
+    f"{TEAM} by distance:"
 )
 
 print(distance_result.to_string(index=False))
