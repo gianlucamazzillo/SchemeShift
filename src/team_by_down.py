@@ -1,11 +1,13 @@
+'''Analysis of team performance by down and distance for a selected NFL team.'''
+
 import nflreadpy as nfl
 import pandas as pd
 
 SEASON = 2025
-TEAM = 'PHI'
+TEAM = 'BAL'
 
 def format_run_gap(row: pd.Series) -> str:
-    '''Função que define os gaps na OL'''
+    '''Convert nflverse run-gap data into an OL gap label'''
     gap_map = {
         'guard': 'A gap',
         'tackle': 'B gap',
@@ -30,6 +32,7 @@ def format_run_gap(row: pd.Series) -> str:
 
 
 def analyze_team_by_down(pbp: pd.DataFrame, team: str,) -> pd.DataFrame:
+    '''Summarize offensive play calling and production by down and play type for a given team.'''
     team_plays = pbp[
         (pbp["posteam"] == team)
         & (pbp["play_type"].isin(["run", "pass"]))
@@ -40,7 +43,6 @@ def analyze_team_by_down(pbp: pd.DataFrame, team: str,) -> pd.DataFrame:
         team_plays['first_down'].fillna(0).eq(1)
         |   team_plays['touchdown'].fillna(0).eq(1)
     )
-#criação do filtro de conversão ou não das jogadas
 
     summary = (
         team_plays
@@ -92,6 +94,7 @@ pbp = nfl.load_pbp(SEASON).to_pandas()
 
 player_stats = nfl.load_player_stats(SEASON).to_pandas()
 
+#Connect play-by-play (pbp) rusher IDs with their positions
 player_positions = (
     player_stats[
         [
@@ -107,6 +110,7 @@ print(f'\n{TEAM} offense by down: ')
 print(result.to_string(index=False))
 
 def analyze_late_downs_by_distance (pbp: pd.DataFrame, team: str) -> pd.DataFrame:
+    '''Summarize third and fourth down perfomance by distance group.'''
     late_down_plays = pbp[
         (pbp['posteam'] == team)
         & (pbp['play_type'].isin(['run', 'pass']))
@@ -210,6 +214,7 @@ print(
 
 print(distance_result.to_string(index=False))
 
+#Inspect individual rushing plays in late-down situations
 third_down_runs = pbp[
     (pbp['posteam'] == TEAM)
     & (pbp['play_type'] == "run")
@@ -259,12 +264,12 @@ fourth_down_runs = fourth_down_runs.merge(
     how="left",
 )
 
-third_down_runs['run_gap'] = third_down_runs.apply(
+third_down_runs['formatted_run_gap'] = third_down_runs.apply(
     format_run_gap,
     axis = 1,
 )
 
-fourth_down_runs['run_gap'] = fourth_down_runs.apply(
+fourth_down_runs['formatted_run_gap'] = fourth_down_runs.apply(
     format_run_gap,
     axis = 1,
 )
@@ -279,7 +284,7 @@ compact_columns =[
     "rusher_player_name",
     "rusher_position",
     "qb_scramble",
-    "run_gap",
+    "formatted_run_gap",
 ]
 
 sorted_third_down_runs = third_down_runs.sort_values(
@@ -293,7 +298,7 @@ sorted_fourth_down_runs = fourth_down_runs.sort_values(
 )
 
 print(
-    f"\nCorridas de {TEAM} em terceiras médias e longas:"
+    f"\n{TEAM} runs on medium and long third downs:"
 )
 
 print(

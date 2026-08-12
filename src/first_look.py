@@ -1,33 +1,35 @@
+'''The purpose of this file is to provide a simple look at the NFL data available through the nflreadpy package.'''
+
 import nflreadpy as nfl
 import pandas as pd
 
 SEASON = 2025
+TEAM = 'BAL'
 
-print(f'Carregando dados da temporada {SEASON}...')
+print(f'Loading play-by-play data for the {SEASON} season...')
 
+#Convert it to pandas for easier manipulation and analysis.
 pbp_polars = nfl.load_pbp(SEASON)
 pbp = pbp_polars.to_pandas()
 
 columns_to_show = [
     'game_id',
     'week',
-    'posteam', #time com a posse
-    'defteam', #time defendendo
+    'posteam', #team with the possession
+    'defteam', #defending team
     'play_type',
     'yards_gained',
 ]
 
-print('\nPrimeiras linhas:')
+print('\nFirst rows:')
 print(pbp[columns_to_show].head(10))
-
-TEAM = 'BAL'
 
 team_plays = pbp[
     (pbp['posteam'] == TEAM)
     & (pbp['play_type'].isin(['run', 'pass']))
 ].copy()
 
-print(f'\nJogadas ofensivas de {TEAM}')
+print(f'\nOffensive plays for {TEAM}')
 print(
     team_plays[
         [
@@ -41,6 +43,7 @@ print(
     ].head(20)
 )
 
+#Summarize offensive production by play type
 summary = (
     team_plays
     .groupby('play_type')
@@ -58,8 +61,8 @@ summary['play_percentage'] = (
     *100
 )
 
-summary['avarage_yards'] = summary['average_yards'].round(2)
+summary['average_yards'] = summary['average_yards'].round(2)
 summary['play_percentage'] = summary['play_percentage'].round(1)
 
-print(f'\nResumo ofensivo do {TEAM}:')
+print(f'\nOffensive summary for {TEAM}:')
 print(summary)
