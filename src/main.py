@@ -33,7 +33,6 @@ player_positions = (
     )
 )
 
-
 #ydstogo annotations
 ydstogo_summary = analyze_ydstogo_summary(pbp, TEAM,)
 ydstogo_distribution = analyze_ydstogo_distribution(pbp, TEAM,)
@@ -70,20 +69,21 @@ third_down_runs = analyze_third_down_runs(pbp, TEAM, player_positions,)
 fourth_down_runs = analyze_fourth_down_runs(pbp, TEAM, player_positions,)
 
 compact_columns =[
-    "week",
-    "defteam",
-    "distance_group",
-    "ydstogo",
-    "yards_gained",
-    "converted",
-    "rusher_player_name",
-    "rusher_position",
-    "qb_scramble",
-    "formatted_run_gap",
+    'week',
+    'defteam',
+    'distance_group',
+    'ydstogo',
+    'yards_gained',
+    'converted',
+    'rusher_player_name',
+    'rusher_position',
+    'qb_scramble',
+    'run_type',
+    'formatted_run_gap',
 ]
 
 print(
-    f"\n{TEAM} runs on medium and long third downs:"
+    f'\n{TEAM} runs on medium and long third downs:'
 )
 
 print(
@@ -91,7 +91,7 @@ print(
 )
 
 print(
-    f"\n{TEAM} fourth-down runs by distance:"
+    f'\n{TEAM} fourth-down runs by distance:'
 )
 
 print(

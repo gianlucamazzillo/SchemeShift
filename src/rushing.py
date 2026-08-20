@@ -48,6 +48,11 @@ def prepare_rushing_plays(
         axis=1,
     )
 
+    rushing_plays['run_type'] = rushing_plays.apply(
+        classify_run_type,
+        axis = 1
+    )
+
     return rushing_plays
 
 def analyze_third_down_runs(
@@ -103,3 +108,29 @@ def analyze_fourth_down_runs(
         ['distance_group', 'ydstogo', 'yards_gained'],
         ascending=[True, True, False],
     )
+
+def classify_run_type (row: pd.Series) -> str:
+    '''Classify a rushing play by a runner and scramble status'''
+
+    if row['qb_scramble'] == 1:
+        return 'qb_scramble' #nflverse already has qb_scramble classified
+
+    if pd.isna(row['rusher_position']):
+        return 'unclassified' 
+    #if merge has not found any player position, it shall not classify
+    #as non_qb_run by exclusion
+
+    if (
+        row['rusher_position'] == 'QB'
+        and row['ydstogo'] == 1
+    ):
+        return 'qb_short_yardege_run'
+    #QB + designed run + 1yrdtogo
+
+    if row ['rusher_position'] == 'QB':
+        return 'qb_designed_run'
+    #designed run by the QB
+
+    return 'non_qb_run'
+    
+
