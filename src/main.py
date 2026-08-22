@@ -1,10 +1,28 @@
 '''Analysis of team performance by down and distance for a selected NFL team.'''
+import argparse
 import nflreadpy as nfl
 
 from ydstogo import(analyze_ydstogo_distribution,analyze_ydstogo_summary,)
 from team_by_down import analyze_team_by_down
-from rushing import (analyze_third_down_runs, analyze_fourth_down_runs)
+from rushing import (analyze_third_down_runs, analyze_fourth_down_runs, prepare_rushing_plays,)
 from late_downs import analyze_late_downs_by_distance
+
+
+parser = argparse.ArgumentParser()
+#Blueprint for receiving arguments in the terminal
+#This shall substitute the SEASON; TEAM and DETAIL_DOWN on the future
+
+parser.add_argument(
+    'analysis',
+    choices = [
+        'ydstogo',
+        'team-by-down',
+        'rushing',
+        'late-downs'
+    ],
+)
+
+args = parser.parse_args()
 
 SEASON = 2025  # Season to analyze
 TEAM = "BAL"  # Team to analyze
