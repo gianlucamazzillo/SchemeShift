@@ -17,6 +17,8 @@ from ydstogo import (
 
 parser = argparse.ArgumentParser()
 
+#Blueprint for receiving arguments in the terminal
+#This shall substitute the SEASON; TEAM and DETAIL_DOWN in the future
 parser.add_argument(
     "analysis",
     choices=[
@@ -30,9 +32,9 @@ parser.add_argument(
 args = parser.parse_args()
 
 
-SEASON = 2025
-TEAM = "BAL"
-DETAIL_DOWN = 3
+SEASON = 2025 #Season to analyze
+TEAM = "BUF" #Team to analyze
+DETAIL_DOWN = 3 #Down selected for detailed analysis of yards to go distribution
 
 # These inputs are temporary and will later be replaced by user-selected parameters.
 
@@ -92,6 +94,26 @@ elif args.analysis == "team-by-down":
 
 
 elif args.analysis == "rushing":
+
+    kneel_test = pbp[
+        (pbp["posteam"] == TEAM)
+        & (pbp["play_type"] == 1)
+    ].copy()
+
+    print(
+        kneel_test[
+            [
+            "week",
+            "down",
+            "ydstogo",
+            "play_type",
+            "rusher_player_name",
+            "yards_gained",
+            "qb_kneel",
+            "desc",
+        ]
+        ].to_string(index=False)
+    )
 
     player_stats = nfl.load_player_stats(SEASON).to_pandas()
 
